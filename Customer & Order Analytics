@@ -77,3 +77,80 @@ FROM BIT_DB.FebSales
 WHERE location like '%Los Angeles%'
 GROUP BY Product;
 
+
+--Which locations in New York received at least 3 orders in January, and how many orders did they each receive? (Hint: use HAVING).
+
+SELECT Location, COUNT(orderID)
+FROM BIT_DB.JanSales
+WHERE location like '%New York%'
+AND length(orderID) = 6 AND orderID <> 'Order ID'
+GROUP BY location
+HAVING count(orderID) > 2;
+
+--How many of each type of headphone were sold in February?
+SElECT *
+FROM BIT_DB.FebSales;
+
+SELECT Product, SUM(Quantity)
+FROM BIT_DB.FebSales
+WHERE Product like '%Headphones%'
+AND length(orderID) = 6 AND orderID <> 'Order ID'
+GROUP BY Product;
+
+
+--What was the average amount spent per account in February? (Hints: For this question, we want the average amount spent / number of accounts, not the amount spent by each account. To multiply, you can use the * symbol, and to divide, you can use the / symbol.)
+SELECT AVG(quantity * price)
+FROM BIT_DB.FebSales
+LEFT JOIN customers
+WHERE orderID = order_id 
+AND length(orderID) = 6 AND orderID <> 'order_id';
+
+OR
+SELECT avg(quantity*price)
+FROM BIT_DB.FebSales Feb
+LEFT JOIN BIT_DB.customers cust
+ON FEB.orderid=cust.order_id
+WHERE length(orderid) = 6 
+AND orderid <> 'Order ID'
+
+--What was the average quantity of products purchased per account in February? (Hint: just like question 3, we want the overall average, not the average for each account individually).
+SELECT avg(Quantity)
+FROM BIT_DB.FebSales 
+LEFT JOIN BIT_DB.customers cust
+ON orderid=order_id
+WHERE length(orderid) = 6 
+AND orderid <> 'Order ID';
+
+
+OR
+SELECT sum(quantity)/count(cust.acctnum)
+FROM BIT_DB.FebSales Feb
+
+LEFT JOIN BIT_DB.customers cust
+ON FEB.orderid=cust.order_id
+
+WHERE length(orderid) = 6 
+AND orderid <> 'Order ID';
+
+
+
+--Which product brought in the most revenue in January and how much revenue did it bring in total?
+
+SELECT *
+FROM BIT_DB.JanSales;
+
+SELECT Product, SUM(Quantity*price) AS Revenue
+FROM BIT_DB.JanSales
+WHERE length(orderID) = 6 AND orderID <> 'Order ID'
+GROUP BY Product
+ORDER BY Revenue DESC LIMIT 1;
+
+OR
+SELECT product, 
+sum(quantity*price)
+FROM BIT_DB.JanSales 
+GROUP BY product
+ORDER BY sum(quantity*price) desc 
+LIMIT 1;
+
+
